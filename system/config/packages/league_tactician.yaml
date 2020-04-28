@@ -1,0 +1,9 @@
+tactician:
+    default_bus: command
+    method_inflector: tactician.handler.method_name_inflector.invoke
+    commandbus:
+        command:
+            middleware:
+                - tactician.middleware.locking
+#                - tactician.middleware.doctrine
+                - tactician.middleware.command_handler

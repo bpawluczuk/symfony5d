@@ -1,0 +1,49 @@
+services:
+    _defaults:
+        public: true
+
+    App\Project\Infrastructure\Query\ProjectReadModelRepository:
+        public: true;
+
+    App\Project\Infrastructure\Repository\ProjectRepository:
+        public: true;
+
+    App\Organization\Infrastructure\Query\OrganizationReadModelRepository:
+        public: true
+        arguments:
+            - '@App\Organization\Domain\Factory\OrganizationReadModelFactory'
+
+    App\Organization\Infrastructure\Repository\OrganizationRepository:
+        public: true;
+        arguments:
+            - '@App\Organization\Domain\Factory\OrganizationFactory'
+        
+    App\Auth\Infrastructure\Query\SessionReadModelRepository:
+        public: true
+        
+    App\Auth\Domain\Service\CurrentUserProvider:
+        public: true
+        arguments:
+            - '@security.helper'
+            - '@App\User\Infrastructure\Query\UserReadModelRepository'
+
+    App\User\Infrastructure\Query\UserReadModelRepository:
+        public: true
+        arguments:
+            - '@App\User\Domain\Factory\UserReadModelFactory'
+
+    App\Location\Infrastructure\Query\LocationReadModelRepository:
+        public: true
+        arguments:
+            - '@App\Location\Domain\Factory\LocationReadModelFactory'
+
+    App\Task\Infrastructure\Query\TaskReadModelRepository:
+        public: true
+        arguments:
+            - '@App\Task\Domain\Factory\TaskReadModelFactory'
+
+    App\Task\Infrastructure\Repository\TaskRepository:
+        public: true
+
+    App\User\Infrastructure\Repository\UserRepository:
+        public: true

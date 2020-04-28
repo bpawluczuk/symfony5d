@@ -1,0 +1,10 @@
+fos_rest:
+    body_listener: true
+    param_fetcher_listener: force
+    view:
+        formats:
+            html: false
+    serializer:
+        serialize_null: true
+    zone:
+        - { path: ^/api/* }

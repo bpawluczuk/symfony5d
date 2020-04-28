@@ -1,0 +1,33 @@
+parameters:
+    uuid_regex: '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}'
+
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+        bind:
+            $redis: '@snc_redis.default'
+
+    gedmo.listener.timestampable:
+        class: Gedmo\Timestampable\TimestampableListener
+        tags:
+            - { name: doctrine.event_subscriber, connection: default }
+        calls:
+            - [ setAnnotationReader, [ '@annotation_reader' ] ]
+
+    _instanceof:
+        App\Shared\Application\HandlerInterface:
+            tags: [{name: tactician.handler, typehints: true}]
+
+    App\:
+        resource: '../src/*'
+        exclude:
+            - '../src/**/Shared/{Domain,Infrastructure,Ui}'
+            - '../src/**/Application/Command/**Command.php'
+            - '../src/**/Domain/{Entity,Exception,Query,Repository,Value}/*'
+            - '../src/**/Infrastructure/**/**ReadModel.php'
+
+    App\Shared\Infrastructure\PresentableExceptionListener:
+        tags:
+            - { name: kernel.event_listener, event: kernel.exception }

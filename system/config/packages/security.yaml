@@ -1,0 +1,18 @@
+security:
+    encoders:
+        App\Entity\User:
+            algorithm: bcrypt
+            cost: 12
+    
+    providers:
+        users:
+            id: App\Auth\Infrastructure\Provider\AuthProvider
+
+    firewalls:
+        api:
+            pattern: ^/api
+            anonymous: true
+
+    access_control:
+        # - { path: ^/admin, roles: ROLE_ADMIN }
+        # - { path: ^/profile, roles: ROLE_USER }

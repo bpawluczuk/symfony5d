@@ -1,0 +1,7 @@
+/.idea/
+/docker/data/
+/system/bin/
+/system/.env.test
+/system/phpunit.xml.dist
+/system/tests/bootstrap.php
+/.phpunit.result.cache

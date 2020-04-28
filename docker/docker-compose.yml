@@ -1,0 +1,41 @@
+version: "3.5"
+
+services:
+  
+  itse_nginx:
+    container_name: itse_nginx
+    ports:
+      - 80:80
+    deploy:
+      resources:
+        limits:
+          cpus: '0.1'
+          memory: 64M
+    build:
+      context: ./nginx
+      args:
+        - DOMAIN=${DOMAIN}
+        - VHOST_FILE=vhost.conf
+        - PHP_FPM_UPSTREAM=itse_php:9000
+    volumes:
+      - ${ITSE_ABS_PATH}:/srv/itse/system
+    links:
+      - itse_php
+
+  itse_php:
+    container_name: itse_php
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 128M
+    build:
+      context: ./php-fpm
+      args:
+        - PHP_TIMEZONE=Europe/Warsaw
+    volumes:
+      - ${ITSE_ABS_PATH}:/srv/itse/system
+
+networks:
+  backend:
+
