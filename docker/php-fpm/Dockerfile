@@ -3,8 +3,14 @@ MAINTAINER BP
 
 ARG PHP_TIMEZONE
 
-RUN apk add openssl git unzip vim postgresql-dev
-RUN docker-php-ext-install pdo_pgsql
+RUN apk --update --no-cache add autoconf g++ make && \
+    pecl install -f xdebug && \
+    docker-php-ext-enable xdebug && \
+    apk del --purge autoconf g++ make
+
+RUN docker-php-ext-install pdo pdo_mysql
+
+RUN apk add nano
 
 RUN ln -s /usr/include/x86_64-linux-gnu/gmp.h /usr/local/include/
 

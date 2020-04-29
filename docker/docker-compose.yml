@@ -2,39 +2,57 @@ version: "3.5"
 
 services:
   
-  itse_nginx:
-    container_name: itse_nginx
+  nginx:
+    container_name: nginx
     ports:
       - 80:80
-    deploy:
-      resources:
-        limits:
-          cpus: '0.1'
-          memory: 64M
     build:
       context: ./nginx
       args:
         - DOMAIN=${DOMAIN}
         - VHOST_FILE=vhost.conf
-        - PHP_FPM_UPSTREAM=itse_php:9000
+        - PHP_FPM_UPSTREAM=php:9000
     volumes:
       - ${ITSE_ABS_PATH}:/srv/itse/system
     links:
       - itse_php
+    networks:
+      - backend
 
   itse_php:
-    container_name: itse_php
-    deploy:
-      resources:
-        limits:
-          cpus: '0.50'
-          memory: 128M
+    container_name: php
     build:
       context: ./php-fpm
       args:
         - PHP_TIMEZONE=Europe/Warsaw
     volumes:
       - ${ITSE_ABS_PATH}:/srv/itse/system
+    environment:
+      APP_ENV: dev
+      DATABASE_URL: mysql://root:haslobp@mysql:3306/system?serverVersion=5.7
+    depends_on:
+      - mysql
+    networks:
+      - backend
+
+  mysql:
+    container_name: mysql
+    image: mysql:5.7
+    command: '--default-authentication-plugin=mysql_native_password'
+    restart: always
+    ports:
+      - "9999:3306"
+    volumes:
+      - ./data/mysql:/var/lib/mysql
+    env_file:
+      - ".env"
+    environment:
+      - MYSQL_ROOT_PASSWORD="${DB_ROOT_PASSWORD}"
+      - MYSQL_DATABASE="${DB_NAME}"
+      - MYSQL_USER="${DB_USERNAME}"
+      - MYSQL_PASSWORD="${DB_PASSWORD}"
+    networks:
+      - backend
 
 networks:
   backend:
